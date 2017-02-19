@@ -63,10 +63,9 @@ class Parallel(Ensemble):
     def predict(self,data,batch=32):
         y_all=[]
         for idx,classifier in enumerate(self.classifiers):
-            y_all.append(classifier.predict(data[idx],batch_size=32).ravel())
-        print(y_all[0])
-        print(y_all[1])
-        return self.lateFusion(np.array(y_all))
+            prediction=classifier.predict(data[idx],batch_size=32)
+            y_all.append(prediction.ravel())
+        return self.lateFusion(np.array(y_all)).reshape((prediction.shape))
 
 
     def save_models(self,file="model"):

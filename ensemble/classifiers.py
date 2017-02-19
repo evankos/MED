@@ -2,6 +2,8 @@ from abc import ABC,abstractmethod
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.models import model_from_json
+from sklearn.svm import SVC
+import numpy as np
 
 class BaseClassifier(ABC):
 
@@ -40,6 +42,11 @@ class BaseClassifier(ABC):
         """Build and compile what is needed"""
         return
 
+    @abstractmethod
+    def predict(self,x,batch_size=32):
+        """Predict on x"""
+        return
+
     @property
     def name(self):
         return self._name
@@ -47,6 +54,57 @@ class BaseClassifier(ABC):
     @name.setter
     def name(self,name):
         self._name = name
+
+
+class Svm(BaseClassifier):
+
+    def __init__(self,name='SVM'):
+        self.name=name
+        self.model=SVC(kernel='poly')
+
+
+    def save_model(self, filepath):
+        """Save Model as JSON"""
+        pass
+
+
+    def save_weights(self, filepath, overwrite):
+        """Save Model weights as MD5"""
+        pass
+
+
+    def load_model(self, filepath):
+        """Load Model from JSON"""
+        pass
+
+
+    def batch_train(self,x,y):
+        """Train on Single Batch"""
+        pass
+
+
+    def fit(self, x, y,batch_size=None,nb_epoch=None,validation_split=None):
+        y=np.where(y==1)[1]
+        self.model.fit(x,y)
+        self.classes=np.max(y) + 1
+        return "NO_HISTORY"
+
+    def predict(self,x,batch_size=None):
+        prediction=self.model.predict(x)
+        y_pred=np.zeros((prediction.shape[0],self.classes))
+        y_pred[np.arange(prediction.shape[0]),prediction]=1
+        return y_pred
+
+    def train_on_generator(self,gen,epochs=2):
+        """Train on Data Generator"""
+        pass
+
+
+    def build(self):
+        """Build and compile what is needed"""
+        pass
+
+
 
 class Dnn(BaseClassifier):
 
