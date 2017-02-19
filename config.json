@@ -1,3 +1,3 @@
 {
-    "embedding_dim": 100
+    "mfcc_features": "../FCVID/features/FCVID_MFCC.txt"
 }

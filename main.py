@@ -2,14 +2,12 @@ import ensemble
 from ensemble.classifiers import Dnn
 from ensemble.topology import Parallel
 import numpy as np
+from corpus.common import mfcc_file
 
-
-
+#test data
 x=np.random.rand(128,3)
 y=np.zeros((128,10))
 y[np.arange(128),np.random.randint(10, size=128)]=1
-
-
 
 
 parallel_ensemble=Parallel()
@@ -27,6 +25,8 @@ print(parallel_ensemble.predict([x,x]))
 
 parallel_ensemble.save_models()
 parallel_ensemble.save_weights()
+
+
 
 
 
