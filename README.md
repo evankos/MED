@@ -20,12 +20,22 @@ Note its very similar to the implementation of the `Sequential` model in Keras.
 Stacking classifiers with `add()`:
 
 ```python
-parallel_ensemble.add(Dnn(10,1,name='DNN1'))
-parallel_ensemble.add(Dnn(10,1,name='DNN2'))
+parallel_ensemble.add(Dnn(3,10,name='DNN1'))
+parallel_ensemble.add(Dnn(3,10,name='DNN2'))
 ```
-
+Compile and build the classifiers and the fusion code:
+```python
+parallel_ensemble.compile(fusion='avg')
+```
+Train the all the ensemble:
+```python
+parallel_ensemble.fit([[x, y], [x, y]])
+```
+Retrieve single prediction after the late fusion of your choice:
+```python
+print(parallel_ensemble.predict([x,x]))
+```
 Saving the model structure as JSON and the weights as MD5:
-
 ```python
 parallel_ensemble.save_models()
 parallel_ensemble.save_weights()

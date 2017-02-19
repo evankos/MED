@@ -26,8 +26,18 @@ class BaseClassifier(ABC):
         return
 
     @abstractmethod
+    def fit(self, x, y,batch_size,nb_epoch,validation_split):
+        """Train on Single Batch"""
+        return
+
+    @abstractmethod
     def train_on_generator(self,gen,epochs=2):
         """Train on Data Generator"""
+        return
+
+    @abstractmethod
+    def build(self):
+        """Build and compile what is needed"""
         return
 
     @property
@@ -48,7 +58,7 @@ class Dnn(BaseClassifier):
         model.add(Dense(width, input_dim=input,activation='relu'))
         model.add(Dense(output,activation='sigmoid'))
         self.model=model
-        self.build()
+
 
     def build(self):
         # try using different optimizers and different optimizer configs
@@ -58,7 +68,13 @@ class Dnn(BaseClassifier):
 
 
     def batch_train(self,x,y):
-        self.model.train_on_batch(x,y)
+        return self.model.train_on_batch(x,y)
+
+    def fit(self, x, y,batch_size=32,nb_epoch=20,validation_split=.1):
+        return self.model.fit(x, y, batch_size=batch_size, nb_epoch=nb_epoch, validation_split=validation_split)
+
+    def predict(self,x,batch_size=32):
+        return self.model.predict(x,batch_size=batch_size)
 
     def train_on_generator(self,gen,epochs=2):
         for epoch in range(epochs):
@@ -74,4 +90,3 @@ class Dnn(BaseClassifier):
 
     def load_model(self, filepath):
         self.model = model_from_json(open(filepath).read())
-        self.build()
