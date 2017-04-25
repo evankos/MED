@@ -10,7 +10,7 @@ from keras.models import Model
 from keras.layers import Dense,Input,Activation
 from keras import regularizers
 from keras.layers import normalization
-from ensemble.tf_fusions import er_fusion
+from ensemble.tf_fusions import er_fusion,jr_fusion,jrer_fusion
 from keras.optimizers import SGD
 
 dataset=Dataset(multilabel=True)
@@ -47,6 +47,7 @@ mfcc_out = Dense(output,activation='sigmoid',name="mfcc")(f)
 cnn_out = Dense(output,activation='sigmoid',name="cnn")(f1)
 # change mode here.
 out = Merge(mode=er_fusion,output_shape=(239,))([mfcc_out, cnn_out])
+# change the overall activation here
 out = Activation('sigmoid')(out)
 
 model = Model(input=[features_1,features_2], output=out)
