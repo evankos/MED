@@ -53,9 +53,9 @@ class Parallel(Ensemble):
 
     def train_on_batch(self, data):
         for idx,classifier in enumerate(self.classifiers):
-            print(classifier.batch_train(data[idx][0],data[idx][1]))
+            print(classifier.slice_train(data[idx][0], data[idx][1]))
 
-    def fit(self, data, epochs=4):
+    def fit(self, data, epochs=20):
         for idx,classifier in enumerate(self.classifiers):
             print("Training Classifier %s" % classifier.name)
             self.histories=classifier.fit(data[idx][0],data[idx][1],nb_epoch=epochs)
@@ -71,9 +71,9 @@ class Parallel(Ensemble):
     def save_models(self,file="model"):
         for classifier in self.classifiers:
             path=join(project_root(),file,"%s.json"%classifier.name)
-            classifier.save_model(filepath=path)
+            classifier.save_model(filename=path)
 
     def save_weights(self,file="weights"):
         for classifier in self.classifiers:
             path=join(project_root(),file,"%s.h5"%classifier.name)
-            classifier.save_weights(filepath=path,overwrite=True)
+            classifier.save_weights(filename=path, overwrite=True)

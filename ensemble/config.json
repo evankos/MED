@@ -1,0 +1,14 @@
+{
+    "mfcc_features": "../FCVID/features/FCVID_MFCC.txt",
+    "sift_features": "../FCVID/features/FCVID_SIFT.txt",
+    "cnn_features": "../FCVID/features/FCVID_CNN.txt",
+    "sift_spectogram_features": "../FCVID/features/FCVID_SpectrogramSIFT.txt",
+    "traj_features": "../FCVID/features/FCVID_IDT_Traj.txt",
+    "mbh_features": "../FCVID/features/FCVID_IDT_MBH.txt",
+    "hog_features": "../FCVID/features/FCVID_IDT_HOG.txt",
+    "hof_features": "../FCVID/features/FCVID_IDT_HOF.txt",
+    "labels": "../FCVID/FCVID_Label.txt",
+    "hierarchy": "../FCVID/FCVID_Hierarchy.txt",
+    "backend": "numpy"
+
+}
