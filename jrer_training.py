@@ -1,17 +1,26 @@
-from keras.engine import Merge
 
+
+from keras.engine import Merge
 from ensemble import objectives
 from ensemble.callbacks import Checkpoint
 from keras import metrics
 from corpus.backend import Dataset
 import numpy as np
+
+from ensemble.classifiers import Dnn
 from ensemble.preprocessing import randomizer
-from keras.models import Model
+from keras.models import Model, Sequential
 from keras.layers import Dense,Input,Activation
 from keras import regularizers
 from keras.layers import normalization
 from ensemble.tf_fusions import er_fusion,jr_fusion,jrer_fusion
-from keras.optimizers import SGD
+from ensemble.np_fusions import jr_fusion as jr_fusion_np
+from ensemble.np_fusions import er_fusion as er_fusion_np
+from ensemble.metrics import map
+from keras.optimizers import SGD, Adam
+import keras.backend as K
+import tensorflow as tf
+
 
 dataset=Dataset(multilabel=True)
 # replace 5000 with dataset.labels.shape[0] to use all the data (slow and mem intensive).
@@ -20,43 +29,6 @@ sample_number = 5000
 # random indexer to retrieve 30% of the test data for validation
 pick=randomizer(sample_number)
 
-
-# Defining the network
-input1=dataset.sources['cnn'][1]
-input2=dataset.sources['mfcc'][1]
-output=dataset.labels.shape[1]
-
-features_1 = Input(shape=(input1,))
-features_2 = Input(shape=(input2,))
-
-e1 = Dense(4000, input_dim=input,activation='sigmoid',
-                W_regularizer=regularizers.l2(l=0.))(features_1)
-e1 = normalization.BatchNormalization()(e1)
-f = Dense(2000,activation='sigmoid',
-                W_regularizer=regularizers.l2(l=0.))(e1)
-f = normalization.BatchNormalization()(f)
-
-e2 = Dense(4000, input_dim=input,activation='sigmoid',
-                W_regularizer=regularizers.l2(l=0.))(features_2)
-e2 = normalization.BatchNormalization()(e2)
-f1 = Dense(2000,activation='sigmoid',
-                W_regularizer=regularizers.l2(l=0.))(e2)
-f1 = normalization.BatchNormalization()(f1)
-
-mfcc_out = Dense(output,activation='sigmoid',name="mfcc")(f)
-cnn_out = Dense(output,activation='sigmoid',name="cnn")(f1)
-# change mode here.
-out = Merge(mode=er_fusion,output_shape=(239,))([mfcc_out, cnn_out])
-# change the overall activation here
-out = Activation('sigmoid')(out)
-
-model = Model(input=[features_1,features_2], output=out)
-
-model.compile(loss=objectives.binary_crossentropy,
-                      optimizer=SGD(),
-                      metrics=[metrics.categorical_accuracy])
-
-model.summary()
 
 
 
@@ -75,6 +47,23 @@ mfcc_y=next(dataset.generator(source='mfcc', samples=sample_number, load_window=
 mfcc_x_t,\
 mfcc_y_t=next(dataset.generator(source='mfcc', samples=sample_number, load_window=1, train=0))
 
+
+
+
+
+
+cnn_dnn=Dnn(dataset.sources['cnn'][1], 239, name='DNN_cnn')
+# cnn_dnn.load_weights(path="weights/")
+mfcc_dnn=Dnn(dataset.sources['mfcc'][1], 239, name='DNN_mfcc')
+# mfcc_dnn.load_weights(path="weights/")
+
+model = Sequential()
+model.add(Merge([cnn_dnn.model, mfcc_dnn.model], mode=jr_fusion, output_shape=(239,)))
+# model.add(Activation('linear'))
+
+model.compile(loss=objectives.binary_crossentropy,
+                      optimizer=Adam(),
+                      metrics=[metrics.categorical_accuracy])
 
 
 #callback to save the best weights and trigger stop if needed
