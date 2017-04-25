@@ -14,10 +14,14 @@ from ensemble.tf_fusions import er_fusion
 from keras.optimizers import SGD
 
 dataset=Dataset(multilabel=True)
+# replace 5000 with dataset.labels.shape[0] to use all the data (slow and mem intensive).
 sample_number = 5000
 
+# random indexer to retrieve 30% of the test data for validation
 pick=randomizer(sample_number)
 
+
+# Defining the network
 input1=dataset.sources['cnn'][1]
 input2=dataset.sources['mfcc'][1]
 output=dataset.labels.shape[1]
@@ -41,7 +45,7 @@ f1 = normalization.BatchNormalization()(f1)
 
 mfcc_out = Dense(output,activation='sigmoid',name="mfcc")(f)
 cnn_out = Dense(output,activation='sigmoid',name="cnn")(f1)
-
+# change mode here.
 out = Merge(mode=er_fusion,output_shape=(239,))([mfcc_out, cnn_out])
 out = Activation('sigmoid')(out)
 
@@ -53,6 +57,9 @@ model.compile(loss=objectives.binary_crossentropy,
 
 model.summary()
 
+
+
+# loading the train datasets.
 cnn_x,\
 cnn_y=next(dataset.generator(source='cnn', samples=sample_number, load_window=1, train=1))
 
@@ -60,7 +67,7 @@ cnn_x_t,\
 cnn_y_t=next(dataset.generator(source='cnn', samples=sample_number, load_window=1, train=0))
 
 
-
+# loading the test datasets.
 mfcc_x,\
 mfcc_y=next(dataset.generator(source='mfcc', samples=sample_number, load_window=1, train=1))
 
@@ -69,19 +76,20 @@ mfcc_y_t=next(dataset.generator(source='mfcc', samples=sample_number, load_windo
 
 
 
-
+#callback to save the best weights and trigger stop if needed
 check_stop = Checkpoint(validation_data=([cnn_x_t[pick],mfcc_x_t[pick]],cnn_y_t[pick]),
                                              previous_best=0.,
                                              verbose=1,mode='max',epochs_to_stop=30)
 
 
-
+#starting the training
 model.fit([cnn_x,mfcc_x], cnn_y, batch_size=128, nb_epoch=200, callbacks=[check_stop])
 
 
 if hasattr(check_stop, 'best_weights'):
     model.set_weights(check_stop.best_weights)
 
+#predict and save on the test dataset
 y_p = model.predict([cnn_x_t,mfcc_x_t])
 np.save("outputs/%s_output_MEAN_INCORPORATED_DNN_"%'mfcc_cnn',y_p)
 
