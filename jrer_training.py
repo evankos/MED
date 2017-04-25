@@ -24,7 +24,7 @@ import tensorflow as tf
 
 dataset=Dataset(multilabel=True)
 # replace 5000 with dataset.labels.shape[0] to use all the data (slow and mem intensive).
-sample_number = 5000
+sample_number = dataset.labels.shape[0]
 
 # random indexer to retrieve 30% of the test data for validation
 pick=randomizer(sample_number)
@@ -58,18 +58,18 @@ mfcc_dnn=Dnn(dataset.sources['mfcc'][1], 239, name='DNN_mfcc')
 # mfcc_dnn.load_weights(path="weights/")
 
 model = Sequential()
-model.add(Merge([cnn_dnn.model, mfcc_dnn.model], mode=jr_fusion, output_shape=(239,)))
-# model.add(Activation('linear'))
+model.add(Merge([cnn_dnn.model, mfcc_dnn.model], mode=jrer_fusion, output_shape=(239,)))
+model.add(Activation('sigmoid'))
 
 model.compile(loss=objectives.binary_crossentropy,
-                      optimizer=Adam(),
+                      optimizer=SGD(lr=0.03),
                       metrics=[metrics.categorical_accuracy])
 
 
 #callback to save the best weights and trigger stop if needed
 check_stop = Checkpoint(validation_data=([cnn_x_t[pick],mfcc_x_t[pick]],cnn_y_t[pick]),
                                              previous_best=0.,
-                                             verbose=1,mode='max',epochs_to_stop=30)
+                                             verbose=1,mode='max',epochs_to_stop=40)
 
 
 #starting the training
