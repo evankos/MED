@@ -26,7 +26,7 @@ def jr_fusion(activations):
     jr = tf.log(tf.divide(activations, tf.add(1.,tf.multiply(-1.,activations))))
     jr = tf.reduce_sum(jr, axis=0)
     max_ = tf.reduce_max(jr)
-    return tf.divide(jr,max_)
+    return jr
 
 @clip_extremes_tf
 def er_fusion(activations):

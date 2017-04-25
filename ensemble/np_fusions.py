@@ -22,7 +22,7 @@ def jr_fusion(activations):
     jr = np.log(np.divide(activations, np.add(1.,np.multiply(-1.,activations))))
     jr = np.sum(jr, axis=0)
     max_ = jr.max()
-    return np.divide(jr,max_)
+    return jr
 
 @clip_extremes
 def er_fusion(activations):
