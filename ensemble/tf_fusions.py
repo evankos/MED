@@ -17,7 +17,7 @@ import tensorflow as tf
 def avg_fusion(activations):
     return K.mean(activations, axis=0)
 
-@clip_extremes_tf
+
 def jrer_fusion(activations):
     return tf.multiply(jr_fusion(activations),er_fusion(activations))
 
