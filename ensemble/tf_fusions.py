@@ -19,13 +19,14 @@ def avg_fusion(activations):
 
 
 def jrer_fusion(activations):
-    return tf.multiply(jr_fusion(activations),er_fusion(activations))
+    return tf.multiply(tf.exp(jr_fusion(activations)),er_fusion(activations))
 
 @clip_extremes_tf
 def jr_fusion(activations):
-    jr = tf.divide(activations, tf.add(1.,tf.multiply(-1.,activations)))
-    jr = tf.reduce_prod(jr, axis=0)
-    return jr
+    jr = tf.log(tf.divide(activations, tf.add(1.,tf.multiply(-1.,activations))))
+    jr = tf.reduce_sum(jr, axis=0)
+    max_ = tf.reduce_max(jr)
+    return tf.divide(jr,max_)
 
 @clip_extremes_tf
 def er_fusion(activations):

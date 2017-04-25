@@ -14,15 +14,22 @@ def avg_fusion(activations):
     return np.average(activations,axis=0)
 
 @time_it_millis
-@clip_extremes
 def jrer_fusion(activations):
-    jr = np.divide(activations, np.add(1.,np.multiply(-1.,activations)))
-    jr = np.prod(jr, axis=0)
+    return np.multiply(np.exp(jr_fusion(activations)),er_fusion(activations))
+
+@clip_extremes
+def jr_fusion(activations):
+    jr = np.log(np.divide(activations, np.add(1.,np.multiply(-1.,activations))))
+    jr = np.sum(jr, axis=0)
+    max_ = jr.max()
+    return np.divide(jr,max_)
+
+@clip_extremes
+def er_fusion(activations):
     _max = np.amax(activations, axis=0)
     _min = np.amin(activations, axis=0)
     er = np.divide(_max, 1-_min)
-    return np.multiply(jr,er)
-
+    return er
 
 # aliases
 avg = AVG = avg_fusion

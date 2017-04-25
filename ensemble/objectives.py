@@ -1,6 +1,6 @@
 from ensemble.common import eps
 import tensorflow as tf
-from keras.objectives import binary_crossentropy,categorical_crossentropy
+from keras.objectives import *
 from tensorflow.contrib import metrics
 import keras.backend as K
 

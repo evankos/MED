@@ -180,6 +180,9 @@ class Dnn(BaseClassifier):
     def save_weights(self, filename='%s.h5', overwrite=True, path=""):
         self.model.save_weights(path+filename % self.name, overwrite)
 
+    def load_weights(self, filename='%s.h5', path=""):
+        self.model.load_weights(path+filename % self.name)
+
     def load_model(self, filepath):
         self.model = model_from_json(open(filepath).read())
 

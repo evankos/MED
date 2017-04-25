@@ -1,6 +1,8 @@
 import logging
 
 import sys
+import types
+
 from decorator import decorator
 import numpy as np
 from ensemble.common import eps
@@ -27,6 +29,8 @@ def clip_extremes_tf(fun_fun, *args, **kwargs):
     args=list(args)
     for arg in range(len(args)):
         try:
+            if isinstance(args[arg],list):
+                args[arg] = tf.stack(args[arg])
             max_value = _to_tensor(1. - epsilon, args[arg].dtype.base_dtype)
             zero = _to_tensor(0., args[arg].dtype.base_dtype)
             args[arg] = tf.clip_by_value(args[arg], zero, max_value)
