@@ -1,8 +1,10 @@
-from abc import ABC,abstractmethod
-from .common import project_root
+from abc import ABC, abstractmethod
 from os.path import join
-from . import fusions
+
 import numpy as np
+
+from . import fusions
+from .common import project_root
 
 
 class Ensemble(ABC):

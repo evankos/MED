@@ -1,6 +1,7 @@
 import numpy as np
+
 from ensemble.common import eps
-from sklearn.metrics import *
+
 
 def binary_accuracy(y_true, y_pred):
     '''Calculates the mean accuracy rate across all predictions for binary

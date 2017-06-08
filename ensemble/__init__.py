@@ -1,9 +1,12 @@
-import os
 import json
-import logging,sys
-from .common import set_project_root,set_backend
-import pkg_resources
+import logging
+import os
+import sys
 from os.path import expanduser
+
+import pkg_resources
+
+from .common import set_project_root, set_backend
 
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 _home = expanduser("~")
@@ -25,10 +28,10 @@ else:
 _backend = _config.get('backend',_backend)
 set_backend(_backend)
 if _backend=="numpy":
-    from . import np_fusions as fusions
+    from .np_functions import *
 
 else:
-    from . import tf_fusions as fusions
+    from .tf_functions import *
 
 
 

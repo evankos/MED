@@ -1,9 +1,11 @@
-from .common import *
 from keras.callbacks import Callback
 import warnings
-import numpy as np
 from .metrics import *
+import warnings
 
+from keras.callbacks import Callback
+import keras.backend as K
+from .metrics import *
 
 
 class Checkpoint(Callback):
@@ -12,8 +14,9 @@ class Checkpoint(Callback):
     '''
     def __init__(self, validation_data, previous_best=0, monitor='val_loss', verbose=0,
                  save_best_only=True,
-                 mode='auto', epochs_to_stop=15):
+                 mode='auto', epochs_to_stop=15, obj=None):
         super(Checkpoint, self).__init__()
+        self.obj = obj
         self.monitor = monitor
         self.validation_data = validation_data
         self.verbose = verbose
@@ -42,8 +45,18 @@ class Checkpoint(Callback):
             else:
                 self.monitor_op = np.less
 
+    def on_train_end(self, logs={}):
+        if hasattr(self, 'best_weights'):
+            self.model.set_weights(self.best_weights)
 
     def on_epoch_end(self, epoch, logs={}):
+        feats = ['cnn', 'mfcc', 'mbh', 'sift', 'hog', 'traj']
+        k = K.get_session().run(self.obj.psi)
+        print("\n",k)
+        k -= np.multiply(np.eye(6), k)
+        maxes = np.argmax(k, axis=1)
+        for index, feat in enumerate(feats):
+            print(feat, feats[maxes[index]])
 
         if self.save_best_only:
             y_p = self.model.predict(self.validation_data[0],batch_size=128)

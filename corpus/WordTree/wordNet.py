@@ -1,7 +1,12 @@
-from nltk.corpus import wordnet as wn
 from ..common import hierarchy_file
 import numpy as np
 from keras.backend.common import floatx
+import numpy as np
+from keras.backend.common import floatx
+
+from ..common import hierarchy_file
+
+
 class Tree():
     def __init__(self):
         self._extra_activations={"layer_1":[],

@@ -1,11 +1,10 @@
-from keras.utils.generic_utils import get_from_module
-
-from .common import mfcc_file,cnn_file,\
-    label_file,sift_file,hof_file,hog_file,\
-    mbh_file,traj_file,sift_spectogram_file, class_index_file
 import numpy as np
 from keras.backend.common import floatx
+
 from .WordTree import Tree
+from .common import mfcc_file, cnn_file, \
+    label_file, sift_file, hof_file, hog_file, \
+    mbh_file, traj_file, sift_spectogram_file, class_index_file
 
 
 class Dataset():

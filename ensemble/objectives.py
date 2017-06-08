@@ -1,8 +1,5 @@
-from ensemble.common import eps
 import tensorflow as tf
 from keras.objectives import *
-from tensorflow.contrib import metrics
-import keras.backend as K
 
 
 class synset_loss():

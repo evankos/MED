@@ -1,19 +1,24 @@
-import logging,os,sys
 import json
-from .common import set_project_root
-from .common import set_mfcc_file
-from .common import set_label_file
+import logging
+import os
+import sys
+from os.path import expanduser
+
+import pkg_resources
+
+from .common import set_class_index_file
 from .common import set_cnn_file
+from .common import set_hierarchy_file
+from .common import set_hof_file
+from .common import set_hog_file
+from .common import set_label_file
+from .common import set_mbh_file
+from .common import set_mfcc_file
+from .common import set_project_root
 from .common import set_sift_file
 from .common import set_sift_spectogram_file
 from .common import set_traj_file
-from .common import set_mbh_file
-from .common import set_hog_file
-from .common import set_hof_file
-from .common import set_hierarchy_file
-from .common import set_class_index_file
-import pkg_resources
-from os.path import expanduser
+
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 _home = expanduser("~")
 resource_package = __name__

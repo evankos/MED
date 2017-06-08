@@ -1,24 +1,19 @@
-import warnings
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 
-import pickle
-from keras.models import Sequential,Model
-from keras.layers import Dense,Input,merge,activations
-from keras.models import model_from_json
-from keras.callbacks import Callback
-from sklearn.svm import SVC
-from sklearn.externals import joblib
-from ensemble import objectives as local_objectives
-from ensemble.activations import custom_mixed_activation
-from ensemble.layers import CustomActivation
-from keras import objectives
-from keras import metrics
-from keras import optimizers
 import numpy as np
-from keras import initializations
-from keras.layers import advanced_activations,normalization
+from keras import metrics
+from keras import objectives
+from keras import optimizers
 from keras import regularizers
-import keras.backend as K
+from keras.callbacks import Callback
+from keras.layers import Dense, Input
+from keras.layers import normalization
+from keras.models import Sequential, Model
+from keras.models import model_from_json
+from sklearn.externals import joblib
+from sklearn.svm import SVC
+
+from ensemble.layers import CustomActivation
 
 
 def to_categorical(prediction):
